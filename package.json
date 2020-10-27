@@ -1,6 +1,6 @@
 {
-  "name": "nouislider",
-  "version": "14.6.2",
+  "name": "@rafail/nouislider",
+  "version": "0.0.1",
   "main": "distribute/nouislider.js",
   "style": "distribute/nouislider.min.css",
   "license": "MIT",
@@ -33,9 +33,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/leongersen/noUiSlider.git"
+    "url": "git://github.com/Rafail1/noUiSlider.git"
   },
   "files": [
     "distribute"
-  ]
+  ],
+  "description": "noUiSlider is a lightweight JavaScript range slider.",
+  "bugs": {
+    "url": "https://github.com/Rafail1/noUiSlider/issues"
+  },
+  "homepage": "https://github.com/Rafail1/noUiSlider#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "author": "rafail"
 }

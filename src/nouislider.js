@@ -2303,11 +2303,21 @@
                 to = checkHandlePosition(scope_Locations, handleNumber, to, lookBackward, lookForward, false);
             }
 
+            var point = scope_Spectrum.fromStepping(to);
+            if (scope_Values[handleNumber ? 0 : 1] === point && point % 1) {
+                return false;
+            }
+
             if (to === false) {
                 return false;
             }
 
-            updateHandlePosition(handleNumber, to);
+            if (scope_Values[0] === scope_Values[1] && scope_Values[1] % 1 === 0 && point % 1 === 0) {
+                updateHandlePosition(handleNumber ? 0 : 1, to);
+                updateHandlePosition(handleNumber, to);
+            } else {
+                updateHandlePosition(handleNumber, to);
+            }
 
             return true;
         }

@@ -1,4 +1,4 @@
-/*! nouislider - 14.6.2 - 9/16/2020 */
+/*! nouislider - 14.6.2 - 10/21/2020 */
 (function(factory) {
     if (typeof define === "function" && define.amd) {
         // AMD. Register as an anonymous module.
@@ -2304,11 +2304,21 @@
                 to = checkHandlePosition(scope_Locations, handleNumber, to, lookBackward, lookForward, false);
             }
 
+            var point = scope_Spectrum.fromStepping(to);
+            if (scope_Values[handleNumber ? 0 : 1] === point && point % 1) {
+                return false;
+            }
+
             if (to === false) {
                 return false;
             }
 
-            updateHandlePosition(handleNumber, to);
+            if (scope_Values[0] === scope_Values[1] && scope_Values[1] % 1 === 0 && point % 1 === 0) {
+                updateHandlePosition(handleNumber ? 0 : 1, to);
+                updateHandlePosition(handleNumber, to);
+            } else {
+                updateHandlePosition(handleNumber, to);
+            }
 
             return true;
         }
