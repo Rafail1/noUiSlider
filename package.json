@@ -1,6 +1,6 @@
 {
   "name": "@rafail/nouislider",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "main": "distribute/nouislider.js",
   "style": "distribute/nouislider.min.css",
   "license": "MIT",

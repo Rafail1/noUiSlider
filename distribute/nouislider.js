@@ -1,4 +1,4 @@
-/*! nouislider - 14.6.2 - 10/21/2020 */
+/*! @rafail/nouislider - 0.0.4 - 11/4/2020 */
 (function(factory) {
     if (typeof define === "function" && define.amd) {
         // AMD. Register as an anonymous module.
@@ -13,7 +13,7 @@
 })(function() {
     "use strict";
 
-    var VERSION = "14.6.2";
+    var VERSION = "0.0.4";
 
     //region Helper Methods
 
@@ -1104,6 +1104,9 @@
         var scope_HandleNumbers = [];
         var scope_ActiveHandlesCount = 0;
         var scope_Events = {};
+        var scope_Style = {
+            style: { handles: [], connects: [] }
+        };
 
         // Exposed API
         var scope_Self;
@@ -2270,7 +2273,7 @@
         }
 
         // Updates scope_Locations and scope_Values, updates visual state
-        function updateHandlePosition(handleNumber, to) {
+        function updateHandlePosition(handleNumber, to, newStyle) {
             // Update locations.
             scope_Locations[handleNumber] = to;
 
@@ -2280,10 +2283,9 @@
             var translation = 10 * (transformDirection(to, 0) - scope_DirOffset);
             var translateRule = "translate(" + inRuleOrder(translation + "%", "0") + ")";
 
-            scope_Handles[handleNumber].style[options.transformRule] = translateRule;
-
-            updateConnect(handleNumber);
-            updateConnect(handleNumber + 1);
+            newStyle["handles"][handleNumber][options.transformRule] = translateRule;
+            newStyle["connects"][handleNumber] = updateConnect(handleNumber);
+            newStyle["connects"][handleNumber + 1] = updateConnect(handleNumber + 1);
         }
 
         // Handles before the slider middle are stacked later = higher,
@@ -2305,7 +2307,9 @@
             }
 
             var point = scope_Spectrum.fromStepping(to);
-            if (scope_Values[handleNumber ? 0 : 1] === point && point % 1) {
+            var secondHandleNumber = handleNumber ? 0 : 1;
+
+            if (scope_Values[secondHandleNumber] === point && point % 1) {
                 return false;
             }
 
@@ -2313,13 +2317,14 @@
                 return false;
             }
 
+            scope_Style.style.handles[handleNumber] = {};
             if (scope_Values[0] === scope_Values[1] && scope_Values[1] % 1 === 0 && point % 1 === 0) {
-                updateHandlePosition(handleNumber ? 0 : 1, to);
-                updateHandlePosition(handleNumber, to);
+                scope_Style.style.handles[secondHandleNumber] = {};
+                updateHandlePosition(secondHandleNumber, to, scope_Style.style);
+                updateHandlePosition(handleNumber, to, scope_Style.style);
             } else {
-                updateHandlePosition(handleNumber, to);
+                updateHandlePosition(handleNumber, to, scope_Style.style);
             }
-
             return true;
         }
 
@@ -2346,10 +2351,11 @@
             // 'scale' to change the width of the element;
             // As the element has a width of 100%, a translation of 100% is equal to 100% of the parent (.noUi-base)
             var connectWidth = h - l;
-            var translateRule = "translate(" + inRuleOrder(transformDirection(l, connectWidth) + "%", "0") + ")";
-            var scaleRule = "scale(" + inRuleOrder(connectWidth / 100, "1") + ")";
 
-            scope_Connects[index].style[options.transformRule] = translateRule + " " + scaleRule;
+            return {
+                left: transformDirection(l, connectWidth) + "%",
+                width: connectWidth + "%"
+            };
         }
 
         // Parses value passed to .set method. Returns current value if not parse-able.
@@ -2627,6 +2633,7 @@
             destroy: destroy,
             steps: getNextSteps,
             on: bindEvent,
+            style: scope_Style,
             off: removeEvent,
             get: valueGet,
             set: valueSet,
@@ -2643,6 +2650,9 @@
             removeTooltips: removeTooltips,
             getTooltips: function() {
                 return scope_Tooltips;
+            },
+            getConnects: function() {
+                return scope_Connects;
             },
             getOrigins: function() {
                 return scope_Handles;
